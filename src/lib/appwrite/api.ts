@@ -10,7 +10,6 @@ export async function createUserAccount(user: INewUser) {
       user.name
     );
     if (!newAccount) throw new Error("Error creating new account");
-  
 
     const avatarUrl = avatars.getInitials(user.name);
     const newUser = await saveUserToDB({
@@ -50,6 +49,7 @@ async function saveUserToDB(user: {
 
 export async function signInAccount(user: { email: string; password: string }) {
   try {
+    await account.deleteSessions();
     const session = await account.createEmailPasswordSession(
       user.email,
       user.password
@@ -71,7 +71,6 @@ export async function getAccount() {
 
 export async function getCurrentUser() {
   try {
-    
     const currentAccount = await getAccount();
     if (!currentAccount) throw new Error("error getting current account");
 
