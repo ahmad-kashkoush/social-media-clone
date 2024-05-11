@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -14,10 +13,22 @@ import {
 import { Input } from "@/components/ui/input";
 import { signupValidation } from "@/lib/validation";
 import Loader from "@/components/shared/Loader";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useToast } from "@/components/ui/use-toast";
+import {
+  useCreateUserAccount,
+  useSignInAccount,
+} from "@/lib/react-query/queriesAndMutations";
+import { useUserContext } from "@/context/AuthContext";
 
 export default function SignupForm() {
-  const isLoading = false;
+  const { toast } = useToast();
+  const navigate = useNavigate();
+  const { mutateAsync: createUserAccount, isPending: isCreatingUser } =
+    useCreateUserAccount();
+  const { mutateAsync: signInAccount, isPending: isSigningIn } =
+    useSignInAccount();
+  const { checkAuthUser, isLoading: isUserLoading } = useUserContext();
   // 1. Define your form.
   const form = useForm<z.infer<typeof signupValidation>>({
     resolver: zodResolver(signupValidation),
@@ -30,23 +41,42 @@ export default function SignupForm() {
   });
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof signupValidation>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+  async function onSubmit(user: z.infer<typeof signupValidation>) {
+    try {
+      const newUser = await createUserAccount(user);
+      if (!newUser) {
+        return toast({
+          title: "Sign up failed",
+        });
+      }
+      const session = await signInAccount({
+        email: user.email,
+        password: user.password,
+      });
+      if (!session) return toast({ title: "Sign in failed" });
+      const isLoggedIn = await checkAuthUser();
+      if (isLoggedIn) {
+        form.reset();
+        navigate("/");
+      } else {
+        return toast({ title: "signup failed , try again" });
+      }
+    } catch (error) {
+      console.log(error);
+    }
   }
   return (
     <Form {...form}>
       <div className="sm:w-420 flex-center flex-col">
         <img src="/assets/images/logo.svg" alt="" />
-        <h2 className="h3-bold md:h2-bold pt-5 ">Create a new account</h2>
+        <h2 className="h3-bold md:h2-bold pt-5">Create a new account</h2>
         <p className="text-light-3 small-medium md:base-regular mt-2">
           to use Snapgram enter your account
         </p>
 
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="flex flex-col gap-5 w-full mt-4"
+          className="flex flex-col gap-3 w-full mt-2"
         >
           <FormField
             control={form.control}
@@ -105,7 +135,7 @@ export default function SignupForm() {
             )}
           />
           <Button className="bg-primary-500 hover:bg-primary-600" type="submit">
-            {isLoading ? (
+            {isCreatingUser || isUserLoading || isSigningIn ? (
               <div className="flex-center gap-2">
                 <Loader />
                 Loading...
