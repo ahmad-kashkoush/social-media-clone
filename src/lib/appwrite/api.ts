@@ -49,7 +49,7 @@ async function saveUserToDB(user: {
 
 export async function signInAccount(user: { email: string; password: string }) {
   try {
-    await account.deleteSessions();
+    // await account.deleteSessions();
     const session = await account.createEmailPasswordSession(
       user.email,
       user.password
@@ -62,7 +62,6 @@ export async function signInAccount(user: { email: string; password: string }) {
 export async function getAccount() {
   try {
     const currentAccount = await account.get();
-
     return currentAccount;
   } catch (error) {
     console.log(error);
@@ -81,6 +80,15 @@ export async function getCurrentUser() {
     );
     if (!currentUser) throw new Error("error getting current user");
     return currentUser.documents[0];
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function signOutAccount() {
+  try {
+    const session = await account.deleteSession("current");
+    return session;
   } catch (error) {
     console.log(error);
   }
