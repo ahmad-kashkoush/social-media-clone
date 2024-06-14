@@ -1,7 +1,6 @@
-import { bottombarLinks, sidebarLinks } from "@/constants";
+import { bottombarLinks } from "@/constants";
 import { INavLink } from "@/types";
-import React from "react";
-import { Link, NavLink, useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const Bottombar = () => {
   const { pathname } = useLocation();
@@ -20,8 +19,8 @@ const Bottombar = () => {
             <img
               src={link.imgURL}
               alt={link.label}
-              width={16}
-              height={16}
+              width={30}
+              height={30}
               className={` ${isActive && "invert-white"}
                     `}
             />
