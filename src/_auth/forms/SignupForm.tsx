@@ -88,7 +88,7 @@ export default function SignupForm() {
                   <Input type="text" className="shad-input" {...field} />
                 </FormControl>
 
-                <FormMessage />
+                <FormMessage className="shad-form_message" />
               </FormItem>
             )}
           />
@@ -102,7 +102,7 @@ export default function SignupForm() {
                   <Input type="text" className="shad-input" {...field} />
                 </FormControl>
 
-                <FormMessage />
+                <FormMessage className="shad-form_message" />
               </FormItem>
             )}
           />
@@ -116,7 +116,7 @@ export default function SignupForm() {
                   <Input type="email" className="shad-input" {...field} />
                 </FormControl>
 
-                <FormMessage />
+                <FormMessage className="shad-form_message" />
               </FormItem>
             )}
           />
@@ -130,7 +130,7 @@ export default function SignupForm() {
                   <Input type="password" className="shad-input" {...field} />
                 </FormControl>
 
-                <FormMessage />
+                <FormMessage className="shad-form_message" />
               </FormItem>
             )}
           />
