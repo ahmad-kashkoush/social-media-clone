@@ -3,7 +3,11 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   createPost,
   createUserAccount,
+  deleteSavedPost,
+  getCurrentUser,
   getRecentPosts,
+  likePost,
+  savePost,
   signInAccount,
   signOutAccount,
 } from "@/lib/appwrite/api";
@@ -19,6 +23,12 @@ export const useSignInAccount = () => {
   return useMutation({
     mutationFn: (user: { email: string; password: string }) =>
       signInAccount(user),
+  });
+};
+export const useGetCurrentUserAccount = () => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.GET_CURRENT_USER],
+    queryFn: getCurrentUser,
   });
 };
 export const useSignOutAccount = () => {
