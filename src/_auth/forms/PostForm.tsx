@@ -15,16 +15,25 @@ import { Textarea } from "@/components/ui/textarea";
 import FileUploader from "@/components/shared/FileUploader";
 import { postValidation } from "@/lib/validation";
 import { Models } from "appwrite";
-import { useCreatePost } from "@/lib/react-query/queriesAndMutations";
+import {
+  useCreatePost,
+  useDeletePost,
+  useUpdatePost,
+} from "@/lib/react-query/queriesAndMutations";
 import { useUserContext } from "@/context/AuthContext";
 import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from "react-router-dom";
 type PostFormProps = {
   post?: Models.Document;
+  action: "create" | "update";
 };
-export default function PostForm({ post }: PostFormProps) {
+export default function PostForm({ post, action="create" }: PostFormProps) {
   const { mutateAsync: createPost, isPending: isLoadingCreate } =
     useCreatePost();
+  const { mutateAsync: updatePost, isPending: isUpdatingPost } =
+    useUpdatePost();
+  const { mutateAsync: deletePost, isPending: isDeletingPost } =
+    useDeletePost();
   const { toast } = useToast();
   const navigate = useNavigate();
   const { user } = useUserContext();
@@ -40,6 +49,19 @@ export default function PostForm({ post }: PostFormProps) {
   });
 
   async function onSubmit(values: z.infer<typeof postValidation>) {
+    // update
+    if (post && action === "update") {
+      const updatedPost = await updatePost({
+        ...values,
+        postId: post.$id,
+        imageId: post?.imageId,
+        imageUrl: post?.imageUrl,
+      });
+      if (!updatedPost) {
+        toast({ title: "not updated, please try again" });
+      }
+      return navigate(`/posts/${post.$id}`);
+    }
     // create new Post
     const newPost = await createPost({
       userId: user.id,
@@ -47,7 +69,7 @@ export default function PostForm({ post }: PostFormProps) {
     });
     if (!newPost) {
       toast({
-        title: "please, try again",
+        title: "not created, please try again",
       });
     }
     console.log(newPost);
@@ -129,8 +151,10 @@ export default function PostForm({ post }: PostFormProps) {
           <Button
             className="shad-button_primary whitespace-nowrap"
             type="submit"
+            disabled={isLoadingCreate||isUpdatingPost}
           >
-            Create Post
+            
+            {action} Post
           </Button>
         </div>
       </form>
