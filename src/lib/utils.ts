@@ -5,7 +5,8 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function formatDate(dateString: string) {
+export function formatDate(dateString: string | undefined) {
+  if (!dateString) return;
   const ONE_DAY = 1000 * 60 * 60 * 24;
   const ONE_HOUR = 1000 * 60 * 60;
   const ONE_MINUTE = 1000 * 60;
