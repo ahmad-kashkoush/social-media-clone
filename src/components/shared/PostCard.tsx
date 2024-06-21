@@ -1,7 +1,6 @@
 import { useUserContext } from "@/context/AuthContext";
 import { formatDate } from "@/lib/utils";
 import { Models } from "appwrite";
-import React from "react";
 import { Link } from "react-router-dom";
 import PostStats from "./PostStats";
 
@@ -16,7 +15,7 @@ export default function PostCard({ post }: postCardProps) {
     <div className="post-card">
       <div className="flex-between">
         <div className="flex items-center gap-3">
-          <Link to={`/profile/${post.creator.$id}`}>
+          <Link to={`/profile/${post?.creator.$id}`}>
             <img
               src={
                 post?.creator?.imageUrl ||
@@ -42,7 +41,7 @@ export default function PostCard({ post }: postCardProps) {
           </div>
         </div>
         <Link
-          to={`/update-post/${post.$id}`}
+          to={`/update-post/${post?.$id}`}
           className={post?.creator?.$id !== user?.id ? "hidden" : ""}
         >
           <img width={20} height={20} src="/assets/icons/edit.svg" alt="edit" />
@@ -60,9 +59,10 @@ export default function PostCard({ post }: postCardProps) {
           </ul>
         </div>
         <img
-        className="post-card_img"
-        alt="post image"
-         src={post.imageUrl || "/assets/icons/profile-placeholder.svg"} />
+          className="post-card_img"
+          alt="post image"
+          src={post.imageUrl || "/assets/icons/profile-placeholder.svg"}
+        />
       </Link>
       <PostStats post={post} userId={user?.id} />
     </div>
