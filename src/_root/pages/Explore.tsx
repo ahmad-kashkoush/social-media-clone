@@ -3,16 +3,14 @@ import Loader from "@/components/shared/Loader";
 import SearchResults from "@/components/shared/SearchResults";
 import { Input } from "@/components/ui/input";
 import useDebounce from "@/hooks/useDebound";
-import { searchPosts } from "@/lib/appwrite/api";
 import {
   useGetPosts,
   useSearchPosts,
 } from "@/lib/react-query/queriesAndMutations";
-import { Grid } from "lucide-react";
-import React, { useState } from "react";
+import { useState } from "react";
 
 export default function Explore() {
-  const { data: posts, fetchNextPage, hasNextPage } = useGetPosts();
+  const { data: posts /* fetchNextPage, hasNextPage */ } = useGetPosts();
 
   const [searchValue, setSearchValue] = useState("");
   // makes code wait little till I finish typing, which save performance
@@ -67,7 +65,10 @@ export default function Explore() {
       </div>
       <div className="flex flex-wrap gap-9 w-full max-w-5xl">
         {showSearchResults ? (
-          <SearchResults isFetchingSearch={isFetchingSearch} searchedPosts={searchedPosts} />
+          <SearchResults
+            isFetchingSearch={isFetchingSearch}
+            searchedPosts={searchedPosts || undefined}
+          />
         ) : showPosts ? (
           <p className="text-light-4 mt-10 text-center w-full">End of Posts</p>
         ) : (

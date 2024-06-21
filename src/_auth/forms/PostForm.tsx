@@ -17,7 +17,7 @@ import { postValidation } from "@/lib/validation";
 import { Models } from "appwrite";
 import {
   useCreatePost,
-  useDeletePost,
+  // useDeletePost,
   useUpdatePost,
 } from "@/lib/react-query/queriesAndMutations";
 import { useUserContext } from "@/context/AuthContext";
@@ -32,8 +32,8 @@ export default function PostForm({ post, action="create" }: PostFormProps) {
     useCreatePost();
   const { mutateAsync: updatePost, isPending: isUpdatingPost } =
     useUpdatePost();
-  const { mutateAsync: deletePost, isPending: isDeletingPost } =
-    useDeletePost();
+  // const { mutateAsync: deletePost, isPending: isDeletingPost } =
+  //   useDeletePost();
   const { toast } = useToast();
   const navigate = useNavigate();
   const { user } = useUserContext();

@@ -2,13 +2,11 @@ import PostCard from "@/components/shared/PostCard";
 import { useGetRecentPosts } from "@/lib/react-query/queriesAndMutations";
 import { Models } from "appwrite";
 import { Loader } from "lucide-react";
-import Module from "module";
-import React from "react";
 
 export default function Home() {
   const {
     data: posts,
-    isError: isPostsError,
+    // isError: isPostsError,
     isPending: isPostsLoading,
   } = useGetRecentPosts();
   return (
