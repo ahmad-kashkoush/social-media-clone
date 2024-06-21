@@ -52,7 +52,7 @@ export default function PostStats({ post, userId }: postStatsProps) {
     }
   }
   return (
-    <div className="flex justify-between items-center z-20">
+    <div className="flex justify-between items-center z-20 gap-3">
       <div className="flex gap-2">
         <img
           src={

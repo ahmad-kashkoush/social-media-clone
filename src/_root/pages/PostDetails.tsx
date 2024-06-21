@@ -1,18 +1,23 @@
 import Loader from "@/components/shared/Loader";
 import PostStats from "@/components/shared/PostStats";
-import ProfileCardDetails from "@/components/shared/ProfileCardDetails";
 import { Button } from "@/components/ui/button";
 import { useUserContext } from "@/context/AuthContext";
 import { useGetPostById } from "@/lib/react-query/queriesAndMutations";
 import { formatDate } from "@/lib/utils";
-import React from "react";
 import { Link, useParams } from "react-router-dom";
 
 export default function PostDetails() {
   const { id } = useParams();
   const { data: post, isPending } = useGetPostById(id || "");
   const { user } = useUserContext();
-  function handleDeletePost() {}
+  function handleDeletePost() {
+    try{
+    throw Error("delete not Implemented Yet");
+    }catch(e){
+      console.error(e);
+    }
+  }
+
   return (
     <div className="post_details-container">
       {isPending ? (
