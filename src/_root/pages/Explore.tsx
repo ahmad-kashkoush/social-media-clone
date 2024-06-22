@@ -29,7 +29,7 @@ export default function Explore() {
   const showSearchResults = delayedValue !== "";
   const showPosts =
     !showSearchResults &&
-    posts.pages.every((item) => item?.documents.length === 0);
+    posts.pages.every((item: any) => item?.documents.length === 0);
   return (
     <div className="explore-container">
       <div className="explore-inner_container">
@@ -72,7 +72,7 @@ export default function Explore() {
         ) : showPosts ? (
           <p className="text-light-4 mt-10 text-center w-full">End of Posts</p>
         ) : (
-          posts?.pages.map((item, index) => (
+          posts?.pages.map((item: any, index) => (
             <GridPostList key={`page-${index}`} posts={item?.documents} />
           ))
         )}

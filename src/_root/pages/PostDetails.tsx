@@ -103,7 +103,7 @@ export default function PostDetails() {
               </ul>
             </div>
             <div className="w-full">
-              <PostStats post={post || {}} userId={user.id} />
+              <PostStats post={post || undefined} userId={user.id} />
               </div>
           </div>
         </div>

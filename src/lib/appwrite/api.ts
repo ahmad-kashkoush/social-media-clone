@@ -1,6 +1,6 @@
 import { INewPost, INewUser, IUpdatePost } from "@/types";
 import { account, appwriteConfig, avatars, databases, storage } from "./config";
-import { ID, Query } from "appwrite";
+import { ID, ImageGravity, Query } from "appwrite";
 export async function createUserAccount(user: INewUser) {
   try {
     const newAccount = await account.create(
@@ -107,7 +107,7 @@ export async function createPost(post: INewPost) {
       throw Error;
     }
     //convert tags into array
-    const tags = post.tags?.replaceAll(" ", "").split(",");
+    const tags = post.tags?.replace(/\s*,\s*/g, ',').split(',');
 
     // create new post from uploaded file
     const newPost = await databases.createDocument(
@@ -153,7 +153,7 @@ export async function getFilePreview(fileId: string) {
       fileId,
       2000,
       2000,
-      "top", // default value for imageGravity
+      "center" as ImageGravity,
       100
     );
     if (!fileUrl) throw Error;
@@ -273,7 +273,7 @@ export async function updatePost(post: IUpdatePost) {
       image = { ...image, imageUrl: fileUrl, imageId: uploadedFile.$id };
     }
     //convert tags into array
-    const tags = post.tags?.replaceAll(" ", "").split(",");
+    const tags = post.tags?.replace(/,?\s+/g, ",").split(",");
 
     // create new post from uploaded file
     const updatedPost = await databases.updateDocument(
@@ -309,7 +309,7 @@ export async function deletePost(postId: string, imageId: string) {
     console.log(error);
   }
 }
-export async function getInfinitePosts({ pageParam }: { pageParam: number }) {
+export async function getInfinitePosts({ pageParam }: { pageParam?: number }) {
   const queries: any[] = [Query.orderDesc("$updatedAt"), Query.limit(10)];
   if (pageParam) {
     // Add a cursor after the page number to get the next set of posts

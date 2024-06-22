@@ -23,7 +23,6 @@ import {
 } from "@/lib/appwrite/api";
 import { INewPost, INewUser, IUpdatePost } from "@/types";
 import { QUERY_KEYS } from "./queryKeys";
-import SearchResults from "@/components/shared/SearchResults";
 
 export const useCreateUserAccount = () => {
   return useMutation({
@@ -78,7 +77,7 @@ export const useLikePost = () => {
       postId: string;
       likesArray: string[];
     }) => likePost(postId, likesArray),
-    onSuccess: (data) => {
+    onSuccess: (data: any) => {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.GET_POST_BY_ID, data?.$id],
       });
@@ -167,16 +166,18 @@ export const useUpdatePost = () => {
 
 export const useGetPosts = () => {
   return useInfiniteQuery({
+    initialPageParam: 0,
     queryKey: [QUERY_KEYS.GET_INFINITE_POSTS],
-    queryFn: getInfinitePosts,
+    queryFn: ({ pageParam = 0 }) => getInfinitePosts({ pageParam }),
+    // initialPageParam: 0, // Starting page parameter
     getNextPageParam: (lastPage: any) => {
       // If there's no data, there are no more pages.
-      if (lastPage && lastPage.documents.length === 0) {
+      if (lastPage?.documents.length === 0) {
         return null;
       }
 
       // Use the $id of the last document as the cursor.
-      const lastId = lastPage.documents[lastPage.documents.length - 1].$id;
+      const lastId = lastPage?.documents[lastPage?.documents.length - 1].$id;
       return lastId;
     },
   });
