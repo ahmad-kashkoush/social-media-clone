@@ -1,4 +1,3 @@
-import FileUploader from "@/components/shared/FileUploader";
 import Loader from "@/components/shared/Loader";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,9 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { useUserContext } from "@/context/AuthContext";
 import {
-  useGetPostById,
   useGetUserById,
-  useUpdatePost,
   useUpdateUser,
 } from "@/lib/react-query/queriesAndMutations";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -55,12 +52,12 @@ export default function UpdateProfile() {
     );
   async function handleUpdate(value: z.infer<typeof ProfileValidation>) {
     const updatedUser = await updateUser({
-      userId: currentUser.$id,
+      userId: currentUser?.$id || "",
       name: value.name,
       bio: value.bio,
       file: value.file,
-      imageId: currentUser.imageId,
-      imageUrl: currentUser.imageUrl,
+      imageId: currentUser?.imageId || "",
+      imageUrl: currentUser?.imageUrl || "",
     });
     if (!updatedUser) {
       toast({

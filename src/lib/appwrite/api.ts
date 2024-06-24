@@ -1,4 +1,4 @@
-import { INewPost, INewUser, IUpdatePost } from "@/types";
+import { INewPost, INewUser, IUpdatePost, IUpdateUser } from "@/types";
 import { account, appwriteConfig, avatars, databases, storage } from "./config";
 import { ID, ImageGravity, Query } from "appwrite";
 export async function createUserAccount(user: INewUser) {
@@ -49,7 +49,7 @@ async function saveUserToDB(user: {
 
 export async function signInAccount(user: { email: string; password: string }) {
   try {
-    // await account.deleteSessions();
+    await account.deleteSessions();
     const session = await account.createEmailPasswordSession(
       user.email,
       user.password
@@ -84,6 +84,20 @@ export async function getCurrentUser() {
     console.log(error);
   }
 }
+export async function getUserById(userId: string) {
+  if (!userId) throw Error;
+  try {
+    const user = await databases.getDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.usersCollectionId,
+      userId
+    );
+    if (!user) throw Error;
+    return user;
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 export async function signOutAccount() {
   try {
@@ -107,7 +121,7 @@ export async function createPost(post: INewPost) {
       throw Error;
     }
     //convert tags into array
-    const tags = post.tags?.replace(/\s*,\s*/g, ',').split(',');
+    const tags = post.tags?.replace(/\s*,\s*/g, ",").split(",");
 
     // create new post from uploaded file
     const newPost = await databases.createDocument(
@@ -336,6 +350,71 @@ export async function searchPosts(searchTerm: string) {
     );
     if (!posts) throw Error;
     return posts;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function getUsers(limit?: number) {
+  const queries = [Query.orderDesc("$createdAt")];
+  if (limit) queries.push(Query.limit(limit));
+  try {
+    const users = await databases.listDocuments(
+      appwriteConfig.databaseId,
+      appwriteConfig.usersCollectionId,
+      queries
+    );
+    if (!users) throw Error;
+    return users;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function updateUser(user: IUpdateUser) {
+  const hasFiletoUpload = user.file.length > 0;
+  try {
+    // current Image
+    let image = {
+      imageUrl: user.imageUrl,
+      imageId: user.imageId,
+    };
+    if (hasFiletoUpload) {
+      // upload file to appwrite
+      const uploadedFile = await uploadFile(user.file[0]);
+      if (!uploadedFile) throw Error;
+      // get file url
+      const fileUrl = await getFilePreview(uploadedFile.$id);
+      if (!fileUrl) {
+        await deleteFile(uploadedFile.$id);
+        throw Error;
+      }
+      image = { ...image, imageUrl: fileUrl, imageId: uploadedFile.$id };
+    }
+
+    // create new post from uploaded file
+    const updatedUser = await databases.updateDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.usersCollectionId,
+      user.userId,
+      {
+        name: user.name,
+        bio: user.bio,
+        imageUrl: image.imageUrl,
+        imageId: image.imageId,
+      }
+    );
+    if (!updatedUser) {
+      if (hasFiletoUpload) {
+        await deleteFile(image.imageId);
+      }
+      throw Error;
+    }
+    // delete past image
+    if (user.imageId && hasFiletoUpload) {
+      await deleteFile(user.imageId);
+    }
+    return updatedUser;
   } catch (error) {
     console.log(error);
   }
