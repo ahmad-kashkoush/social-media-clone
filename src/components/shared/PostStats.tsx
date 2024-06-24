@@ -5,9 +5,9 @@ import {
   useSavePost,
 } from "@/lib/react-query/queriesAndMutations";
 import { Models } from "appwrite";
-import { Loader } from "lucide-react";
 import React, { useEffect, useState } from "react";
-
+import Loader from "@/components/shared/Loader";
+import { useLocation } from "react-router-dom";
 type postStatsProps = {
   post?: Models.Document;
   userId: string;
@@ -51,8 +51,12 @@ export default function PostStats({ post, userId }: postStatsProps) {
       savePost({ postId: post?.$id || "", userId: userId });
     }
   }
+  const location=useLocation();
+  const containerStyles = location.pathname.startsWith("/profile")
+  ? "w-full"
+  : "";
   return (
-    <div className="flex justify-between items-center z-20 gap-3">
+    <div className={`flex justify-between items-center z-20 ${containerStyles} `}>
       <div className="flex gap-2">
         <img
           src={
