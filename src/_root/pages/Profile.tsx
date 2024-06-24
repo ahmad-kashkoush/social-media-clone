@@ -48,6 +48,9 @@ export default function Profile() {
             <StatsBlock value={following} label="Following" />
             <StatsBlock value={postsNumber} label="Posts" />
           </div>
+          <p className="small-medium md:base-medium text-center xl:text-left mt-7 max-w-screen-sm">
+            {currentUser.bio}
+          </p>
         </div>
         <div className="flex justify-center gap-4">
           <div className="">
@@ -91,7 +94,7 @@ export default function Profile() {
             }`}
             to={`/profile/${id}/liked-posts`}
           >
-             <img
+            <img
               src={"/assets/icons/like.svg"}
               alt="liked"
               width={20}
