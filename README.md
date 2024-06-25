@@ -17,7 +17,11 @@ and React.
 
 ## Demo
 
-upload video here
+
+
+https://github.com/ahmad-kashkoush/social-media-clone/assets/89735230/c16cbfe8-ffa5-4a14-9660-36545b9f7cfe
+
+
 
 ## What I've Learnt
 
