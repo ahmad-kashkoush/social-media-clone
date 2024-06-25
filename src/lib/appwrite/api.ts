@@ -49,7 +49,7 @@ async function saveUserToDB(user: {
 
 export async function signInAccount(user: { email: string; password: string }) {
   try {
-    await account.deleteSessions();
+    // await account.deleteSessions();
     const session = await account.createEmailPasswordSession(
       user.email,
       user.password

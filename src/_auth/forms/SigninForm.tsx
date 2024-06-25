@@ -28,8 +28,8 @@ export default function SigninForm() {
   const form = useForm<z.infer<typeof signinValidation>>({
     resolver: zodResolver(signinValidation),
     defaultValues: {
-      email: "",
-      password: "",
+      email: "kkk@gmail.com",
+      password: "123456789",
     },
   });
 
@@ -40,13 +40,16 @@ export default function SigninForm() {
         email: user.email,
         password: user.password,
       });
-      if (!session) return toast({ title: "Sign in failed" });
+      if (!session) {
+        toast({ title: "Sign in failed" });
+      }
       const isLoggedIn = await checkAuthUser();
       if (isLoggedIn) {
         form.reset();
         navigate("/");
-      } else {
-        return toast({ title: "signin failed , try again" });
+      }
+       else {
+        toast({ title: "signin failed , try again" });
       }
     } catch (error) {
       console.log(error);
@@ -101,6 +104,60 @@ export default function SigninForm() {
               </div>
             ) : (
               "Login"
+            )}
+          </Button>
+          <Button
+            className="bg-primary-500 hover:bg-primary-600"
+            onClick={() =>
+              onSubmit({
+                email: "erwinSmith@gm.com",
+                password: "12345678",
+              })
+            }
+          >
+            {isUserLoading || isSigningIn ? (
+              <div className="flex-center gap-2">
+                <Loader />
+                Loading...
+              </div>
+            ) : (
+              "Login as Erwin Smith"
+            )}
+          </Button>
+          <Button
+            className="bg-primary-500 hover:bg-primary-600"
+            onClick={() =>
+              onSubmit({
+                email: "erenYeager@gm.com",
+                password: "12345678",
+              })
+            }
+          >
+            {isUserLoading || isSigningIn ? (
+              <div className="flex-center gap-2">
+                <Loader />
+                Loading...
+              </div>
+            ) : (
+              "Login as Eren Yeager"
+            )}
+          </Button>
+          <Button
+            className="bg-primary-500 hover:bg-primary-600"
+            onClick={() =>
+              onSubmit({
+                email: "leviAckerman@gm.com",
+                password: "12345678",
+              })
+            }
+          >
+            {isUserLoading || isSigningIn ? (
+              <div className="flex-center gap-2">
+                <Loader />
+                Loading...
+              </div>
+            ) : (
+              "Login as Levi Ackerman"
             )}
           </Button>
           <p className="text-small-regular text-light-2 text-center mt-2 ">
